@@ -1,0 +1,91 @@
+Chapter 3
+
+gcc -std=c99 -Wall prompt.c -o prompt
+
+
+when adding #include<editline/readline.h> and #inlcude<editline/history.h>
+
+there might be error when compiling.sudo apt-get install libedit-dev will install the libraries.also we can make it link by adding the flag -ledit to our compile command
+
+gcc -std=c99 -Wall prompt.c -ledit -o prompt
+
+The C preprocessor:-is a program that runs before the compiler.#.also to detect which operating system the code is being complied on,and to use this to emit different code.
+
+
+Chapter 5
+
+to write a programming language such as our lisp we are going to need to understand grammers.
+for reading in the user input we need to write a grammer which describes it.here we will use the libraray called mpc
+
+mpc:- is a parser combinator library written by the author of the book build lisp using c(thanks frindfor this book by the way :) 
+so it is a library that allows you to build programs that understand and process particular langauges,and hence are named parsers.
+
+
+/* this is for my english knowledge :)
+› An Adjective is either "wow", "many", "so" or "such".
+
+› A Noun is either "lisp", "language", "c", "book" or "build".
+
+› A Phrase is an Adjective followed by a Noun.
+
+› A Doge is zero or more Phrases.
+
+*/
+
+mpc_parser_t* Adjective = mpc_or(4,mpc_sym("wow"),mpc_sym("so"),mpc_sym("many"),mpc_sym("such"))
+mpc_parser_t* Noun = mpc_or(2,mpc_sym("lisp"),mpc_sym("language"))
+mpc_parser_t* Pharse = mpc_and(2,mpcf_strfold,Adjective,Noun,free)
+mpc_parser_t* Doge = mpc_many(mpcf_strfold,Phrase)
+
+mpc_new to create the name of the rules and mpc_lang to define them
+mpc_lang first argument is optional flags.for this we just use the defaults.the second is long multi-line3 string in C.This is the grammer specification.each rule has the name of the rule on the left 
+,colon : then on the right its defnition then terminated with a semicolon
+
+"
+  adjective : \"wow\" | \"many\"         \
+              \"so\";
+  noun: .....
+  phraser : <adjective><noun>
+  doge    : <phrase>*;
+  numbers : [0-1]*;
+  links   : \"http://www\.w+\.com
+",...
+
+
+Chapter 6 Parsing 
+
+we will try out mpc using polish notation
+1 + 2 + 6polish notation: +1 2 6
+
+to start,in polish notation the operator always comes first,followed by either number or other expressions in parenthesis.
+Program :- the start of input,an Operator, one or more Expression,and the end of input
+Expression :- either a number or '(',and Operator,one or more Expression, and an ')'
+Operator:- '+', '-', '*','/'
+Number:- an optional -,and one or more characters between 0 and 9
+
+
+installing mpc use github
+
+gcc -std=c99 -Wall parsing.c mpc.c -ledit -lm -o parsing//the -lm is to link to the math library
+when we say "mpc.h" searches the current directory first while the normal one searches <stdio.h> for the file in the system locations for the headers first
+
+
+
+Chapter 7 
+
+now we can read input we need to evaluate it.meaning to perform the computation
+
+this internal structure is called abstract syntax tree is the internal structure we saw printed out
+by the program and it represents the structure of the program based on the input entered by the user.
+At the leaves of this tree are numbers and operators-the actual data to be processed.at the  branches are the rules used to produce this part of the tree-the information on how to traverse and evaluate it.
+
+recursive function:- one that calls itself as some part of its calculation.
+
+
+atoi(convets a char* to a long).
+strcmp(takes as input two char * and if they are equal it returns 0.
+strstr(takes as input two char* and returns a pointer to the location of the second in the first,or 0
+if the second is not a sub-string of the first)
+
+
+stopped at chapter 7 exercises
